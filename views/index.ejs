@@ -1,0 +1,61 @@
+<% layout('layout') -%>
+
+<script src="/libs/jquery.js"></script>
+<script src="/libs/three.min.js"></script>
+<script>
+
+	$(document).ready(function(){
+
+		var camera, scene, renderer;
+		scene = new THREE.Scene();
+
+		// Box Texture
+		var texture = THREE.ImageUtils.loadTexture( "/images/block.png" );
+		texture.wrapS = THREE.RepeatWrapping;
+		texture.wrapT = THREE.RepeatWrapping;
+		texture.repeat.set(1, 2);
+
+		for(var a = 0; a < 4; a++){
+			for(var i = 0; i < 4; i++){
+				addBox((i * 100), 0, (a * 100));
+			}
+		}
+
+		renderer = new THREE.CanvasRenderer();
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		document.body.appendChild(renderer.domElement);
+
+		camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+		camera.position.z = 500;
+		camera.position.x = 150;
+
+		$(window).load(function() {
+			animate();
+	    });
+
+	    function addBox(x, y, z){
+	    	console.log(x + " " + y + " " + z);
+
+	    	var geometry = new THREE.PlaneGeometry(32, 64);
+			var material = new THREE.MeshBasicMaterial({
+				map: texture
+			});
+
+			var mesh = new THREE.Mesh(geometry, material);
+			mesh.side = THREE.DoubleSide;
+
+			scene.add(mesh);
+			mesh.position = new THREE.Vector3(x, y, z);
+	    }
+
+	    function animate(){
+	    	requestAnimationFrame(animate);
+
+	    	camera.position.z = camera.position.z - .5;
+
+	    	renderer.render(scene, camera);
+	    }
+
+	});
+
+</script>
